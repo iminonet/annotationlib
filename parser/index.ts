@@ -14,6 +14,13 @@ interface AnnotationAppearance {
 	 * The unit originally used by YouTube is generally unknown, but defaults to 3.15 in the renderer.
 	 */
 	textSize?: number;
+
+	/**
+	 * Controls the effects used in the annotation.
+	 *
+	 * Glow-related effects seems to be unused.
+	*/
+	effects?: AnnotationEffects;
 }
 
 type AnnotationAction = AnnotationActionLink | AnnotationActionTimestamp;
@@ -39,9 +46,11 @@ interface AnnotationActionTimestamp {
 
 const AnnotationTypesArr = ["text",  "highlight",  "pause",  "branding"] as const;
 const AnnotationStylesArr = ["popup", "speech", "highlightText", "anchored", "branding", "label", "title"] as const;
+const AnnotationEffectsArr = ["dropshadow", "bevel", "glow", "textdropshadow", "textglow"] as const;
 
 export type AnnotationType = typeof AnnotationTypesArr[number];
 export type AnnotationStyle = typeof AnnotationStylesArr[number];
+export type AnnotationEffects = typeof AnnotationEffectsArr[number];
 
 export function isAnnotationType(value: string): value is AnnotationType {
 	return AnnotationTypesArr.includes(value as AnnotationType);
@@ -49,6 +58,9 @@ export function isAnnotationType(value: string): value is AnnotationType {
 
 export function isAnnotationStyle(value: string): value is AnnotationStyle {
 	return AnnotationStylesArr.includes(value as AnnotationStyle);
+}
+export function isAnnotationEffect(value: string): value is AnnotationEffect {
+	return AnnotationEffectsArr.includes(value as AnnotationEffect);
 }
 
 export interface Annotation {
@@ -369,8 +381,7 @@ function getAppearanceFromBase(base: Element): AnnotationAppearance {
 		const bgColor = appearanceElement.getAttribute("bgColor");
 		const fgColor = appearanceElement.getAttribute("fgColor");
 		const textSize = appearanceElement.getAttribute("textSize");
-		// not yet sure what to do with effects
-		// const effects = appearanceElement.getAttribute("effects");
+        const effects = appearanceElement.getAttribute("effects");
 
 		const styles: AnnotationAppearance = {};
 
